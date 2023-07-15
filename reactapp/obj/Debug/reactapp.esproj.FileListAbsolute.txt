@@ -1,0 +1,2 @@
+C:\Users\Rafael\source\repos\CadastroMercadoria\reactapp\obj\Debug\reactapp.esproj.SuggestedBindingRedirects.cache
+C:\Users\Rafael\source\repos\CadastroMercadoria\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache
