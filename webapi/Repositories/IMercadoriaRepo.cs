@@ -4,10 +4,10 @@ namespace webapi.Repositories
 {
     public interface IMercadoriaRepo
     {
-        public Entrada GetByIdMercadoria(Entrada id);
-        public List<Entrada> GetMercadoria();
-        public string AddMercadoria(Entrada item);
-        public bool DeleteMercadoria(Entrada id);
-        public string UpdateMercadoria(Entrada item);
+        public string GetByIdMercadoria(int id);
+        public string GetMercadoria();
+        public string AddMercadoria(Request request);
+        public string DeleteMercadoria(int id);
+        public string UpdateMercadoria(Request request);        
     }
 }

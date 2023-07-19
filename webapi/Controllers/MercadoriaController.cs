@@ -1,49 +1,53 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json.Serialization;
 using webapi.Models;
 using webapi.Repositories;
 
 namespace webapi.Controllers
 {
-    [Route("[Controller]")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class MercadoriaController : Controller
     {
-        private readonly MercadoriaRepo _mercadoriaRepo;
-        public MercadoriaController(MercadoriaRepo mercadoriaRepo)
+        private readonly IMercadoriaRepo _mercadoriaRepo;
+        public MercadoriaController(IMercadoriaRepo mercadoriaRepo)
         {
             _mercadoriaRepo = mercadoriaRepo;
         }
-        [HttpGet]
-        [Route("GetAll")]
-        public List<Entrada> GetMercadoria()
-        {
-            return _mercadoriaRepo.GetMercadoria();
-        }
-        [HttpGet]
-        [Route("GetbyId")]
-        public Entrada GetByIdMercadoria([FromBody] Entrada Request)
-        {
 
-            return _mercadoriaRepo.GetByIdMercadoria(Request);
-        }
-
-        [HttpGet]
+        [HttpPost]
         [Route("Post")]
-        public string PostMercadoria([FromBody] Entrada Request)
+        public string PostMercadoria([FromBody] Request Request)
         {
             return _mercadoriaRepo.AddMercadoria(Request);
         }
 
         [HttpGet]
-        [Route("Delete")]
-        public bool DeleteMercadoria([FromBody] Entrada Request)
+        [Route("getall")]
+        public string GetMercadoria()
         {
-            return _mercadoriaRepo.DeleteMercadoria(Request);
+            var mercadoria = _mercadoriaRepo.GetMercadoria();
+            return mercadoria;
+        }
+        [HttpPost]
+        [Route("getbyid")]
+        public string GetByIdMercadoria([FromBody] int id)
+        {              
+            return _mercadoriaRepo.GetByIdMercadoria(id);           
         }
 
-        [HttpGet]
+        [HttpDelete]
+        [Route("delete")]
+        public string DeleteMercadoria([FromBody] int id)
+        {
+            return _mercadoriaRepo.DeleteMercadoria(id);
+        }
+
+        [HttpPut]
         [Route("Update")]
-        public string UpdateMercadoria([FromBody] Entrada Request)
+        public string UpdateMercadoria([FromBody] Request Request)
         {
             return _mercadoriaRepo.UpdateMercadoria(Request);
         }

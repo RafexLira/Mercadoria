@@ -9,6 +9,7 @@ namespace webapi.Context
         private IConfiguration _configuration;
         public DbSet<Entrada> Entradas { get; set; }
         public DbSet<Saida> Saidas { get; set; }
+        public DbSet<Mercadoria> Mercadorias { get; set; }
 
         public MercadoriaContext(DbContextOptions<MercadoriaContext> options, IConfiguration configuration) : base(options)
         {

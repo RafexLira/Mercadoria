@@ -1,3 +1,5 @@
+using MediatR;
+using System.Reflection;
 using webapi.Context;
 using webapi.Repositories;
 
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MercadoriaContext>();
 builder.Services.AddTransient<IMercadoriaRepo, MercadoriaRepo>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+
 
 var app = builder.Build();
 
