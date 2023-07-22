@@ -34,9 +34,10 @@ namespace webapi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Local")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Quantidade")
+                    b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -63,6 +64,9 @@ namespace webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("GuidSaida")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -70,9 +74,6 @@ namespace webapi.Migrations
                     b.Property<string>("NumeroRegistro")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SaidaId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
@@ -82,10 +83,6 @@ namespace webapi.Migrations
 
                     b.HasIndex("EntradaId")
                         .IsUnique();
-
-                    b.HasIndex("SaidaId")
-                        .IsUnique()
-                        .HasFilter("[SaidaId] IS NOT NULL");
 
                     b.ToTable("Mercadorias");
                 });
@@ -101,10 +98,14 @@ namespace webapi.Migrations
                     b.Property<DateTime>("DataHora")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("GuidSaida")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Local")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Quantidade")
+                    b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -120,21 +121,13 @@ namespace webapi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("webapi.Models.Saida", null)
-                        .WithOne("Mercadorias")
-                        .HasForeignKey("webapi.Models.Mercadoria", "SaidaId");
-
                     b.Navigation("Entrada");
                 });
 
             modelBuilder.Entity("webapi.Models.Entrada", b =>
                 {
-                    b.Navigation("Mercadorias");
-                });
-
-            modelBuilder.Entity("webapi.Models.Saida", b =>
-                {
-                    b.Navigation("Mercadorias");
+                    b.Navigation("Mercadorias")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

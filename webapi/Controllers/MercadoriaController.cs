@@ -18,36 +18,59 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("Post")]
-        public string PostMercadoria([FromBody] Request Request)
+        [Route("AddMercadoria")]
+        public string PostMercadoria([FromBody] RequestEntrada Request)
         {
             return _mercadoriaRepo.AddMercadoria(Request);
+        }      
+
+        [HttpGet]
+        [Route("GetMercadoria")]
+        public string GetEntradaMercadoria()
+        {
+            var mercadoria = _mercadoriaRepo.GetEntradaMercadoria();
+            return mercadoria;
+        }       
+
+        [HttpPost]
+        [Route("GetMercadoria/Id")]
+        public string GetByIdEntrada([FromBody] int id)
+        {              
+            return _mercadoriaRepo.GetByIdEntrada(id);           
         }
 
         [HttpGet]
-        [Route("getall")]
-        public string GetMercadoria()
+        [Route("GetSaidas")]
+        public string GetSaida()
         {
-            var mercadoria = _mercadoriaRepo.GetMercadoria();
+            var mercadoria = _mercadoriaRepo.GetSaidaMercadoria();
             return mercadoria;
         }
+
         [HttpPost]
-        [Route("getbyid")]
-        public string GetByIdMercadoria([FromBody] int id)
-        {              
-            return _mercadoriaRepo.GetByIdMercadoria(id);           
+        [Route("GetSaida/Id")]
+        public string GetByIdSaida([FromBody] int id)
+        {
+            return _mercadoriaRepo.GetByIdSaida(id);
+        }
+
+        [HttpPut]
+        [Route("AddSaidaMercadoria")]
+        public string AddSaidaMercadoria([FromBody] RequestSaida request)
+        {
+            return _mercadoriaRepo.AddSaidaMercadoria(request);
         }
 
         [HttpDelete]
-        [Route("delete")]
+        [Route("DeleteMercadoria")]
         public string DeleteMercadoria([FromBody] int id)
         {
             return _mercadoriaRepo.DeleteMercadoria(id);
         }
 
         [HttpPut]
-        [Route("Update")]
-        public string UpdateMercadoria([FromBody] Request Request)
+        [Route("UpdateMercadoria")]
+        public string UpdateMercadoria([FromBody] RequestMercadoria Request)
         {
             return _mercadoriaRepo.UpdateMercadoria(Request);
         }

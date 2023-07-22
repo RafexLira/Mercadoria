@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http.Json;
 using System.Text.Json;
 using webapi.Context;
@@ -11,62 +14,121 @@ namespace webapi.Repositories
     public class MercadoriaRepo : IMercadoriaRepo
     {
         private MercadoriaContext _context;
-        private readonly IMapper _mapper;
-        public MercadoriaRepo(IMapper mapper, MercadoriaContext context)
+        public MercadoriaRepo(MercadoriaContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        public string GetMercadoria()
+        public string GetEntradaMercadoria()
         {
-            //LEMBRETE PESSOAL
-            //FALTA ADICIONAR A ENTIDADE SAIDA E CORRIGIR O RETORNO NULL NA JSON
+            var result = (from entrada in _context.Entradas
+                          join mercadoria in _context.Mercadorias on entrada.Id equals mercadoria.EntradaId
+                          //join saida in _context.Saidas on mercadoria.SaidaId equals saida.Id
 
-            var mercadoria = _context.Entradas
-               .Join(_context.Mercadorias,
-                   entrada => entrada.Id,
-                    mercadoria => mercadoria.Entrada.Id,
-                   (entrada, mercadoria) => new Response
-                   {
-                       Quantidade = entrada.Quantidade.ToString(),
-                       DataEntrada = entrada.DataHora,
-                       LocalEntrada = entrada.Local,
-                       Mercadorias = entrada.Mercadorias
+                          select new
+                          {
+                              entrada.Id,
+                              entrada.Quantidade,
+                              entrada.DataHora,
+                              entrada.Local,
+                              mercadoria.Nome,
+                              mercadoria.Fabricante,
+                              mercadoria.Descricao,
+                              mercadoria.NumeroRegistro,
+                              mercadoria.Tipo
 
-                   })
-            .ToList();
+                          }).ToList();
 
-            return JsonConvert.SerializeObject(mercadoria);
+            return JsonConvert.SerializeObject(result);
+
         }
-        public string GetByIdMercadoria(int id)
+        public string GetByIdEntrada(int id)
         {
-            //LEMBRETE PESSOAL
-            //FALTA ADICIONAR A ENTIDADE SAIDA E CORRIGIR O RETORNO NULL NA JSON
+
+            var result = (from entrada in _context.Entradas.Where(x => x.Id == id)
+                          join mercadoria in _context.Mercadorias on entrada.Id equals mercadoria.EntradaId
+                          //join saida in _context.Saidas on mercadoria.SaidaId equals saida.Id
+                          select new
+                          {
+                              entrada.Id,
+                              entrada.Quantidade,
+                              entrada.DataHora,
+                              entrada.Local,
+                              mercadoria.Nome,
+                              mercadoria.Fabricante,
+                              mercadoria.Descricao,
+                              mercadoria.NumeroRegistro,
+                              mercadoria.Tipo
+
+                          }).ToList();
+
+            //var settings = new JsonSerializerSettings
+            //{
+            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //};
+
+            return JsonConvert.SerializeObject(result);
 
 
-            if (id == null)
-            {
-                return "";
-            }
-           
-            var mercadoria = _context.Entradas.Where(x => x.Id == id)
-              .Join(_context.Mercadorias,
-                  entrada => entrada.Id,
-                   mercadoria => mercadoria.Entrada.Id,
-                  (entrada, mercadoria) => new Response
-                  {
-                      Quantidade = entrada.Quantidade.ToString(),
-                      DataEntrada = entrada.DataHora,
-                      LocalEntrada = entrada.Local,
-                      Mercadorias = entrada.Mercadorias
-                  });
 
-            return JsonConvert.SerializeObject(mercadoria);
+            return "Item não encontrado!";
         }
-
-        public string AddMercadoria(Request request)
+        public string GetSaidaMercadoria()
         {
+            var result = (from saida in _context.Saidas
+                          join mercadoria in _context.Mercadorias on saida.Id equals mercadoria.EntradaId
+                          //join saida in _context.Saidas on mercadoria.SaidaId equals saida.Id
+
+                          select new
+                          {
+                              saida.Id,
+                              saida.Quantidade,
+                              saida.DataHora,
+                              saida.Local,
+                              mercadoria.Nome,
+                              mercadoria.Fabricante,
+                              mercadoria.Descricao,
+                              mercadoria.NumeroRegistro,
+                              mercadoria.Tipo
+
+                          }).ToList();
+
+
+            //var settings = new JsonSerializerSettings
+            //{
+            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            //    NullValueHandling = NullValueHandling.Ignore
+            //};
+
+            return JsonConvert.SerializeObject(result);
+
+        }
+        public string GetByIdSaida(int id)
+        {
+            var result = (from saida in _context.Saidas.Where(x => x.Id == id)
+                          join mercadoria in _context.Mercadorias on saida.Id equals mercadoria.EntradaId
+                          select new
+                          {
+                              saida.Id,
+                              saida.Quantidade,
+                              saida.DataHora,
+                              saida.Local,
+                              mercadoria.Nome,
+                              mercadoria.Fabricante,
+                              mercadoria.Descricao,
+                              mercadoria.NumeroRegistro,
+                              mercadoria.Tipo
+
+                          }).ToList();
+
+            return JsonConvert.SerializeObject(result);
+
+
+            return "Item não encontrado!";
+        }
+        public string AddMercadoria(RequestEntrada request)
+        {
+            if (request.Id == null) return "Preencha os campos adequadamente!";
             try
             {
                 var mercadoria = _context.Entradas.Find(request.Id);
@@ -93,7 +155,7 @@ namespace webapi.Repositories
 
                 _context.Entradas.Add(novaEntrada);
                 _context.SaveChanges();
-               
+
 
             }
             catch
@@ -102,10 +164,9 @@ namespace webapi.Repositories
             }
             return "Adicionado com sucesso!";
         }
-
         public string DeleteMercadoria(int id)
         {
-        
+
             try
             {
                 var mercadoria = _context.Entradas.Find(id);
@@ -118,39 +179,91 @@ namespace webapi.Repositories
             }
             catch
             {
-
+                return "Ocorreu um erro ao tentar encontrar o produto";
             }
             return "Item removido com sucesso!";
         }
-
-        public string UpdateMercadoria(Request request)
+        public string UpdateMercadoria(RequestMercadoria request)
         {
-            var entrada = _context.Entradas.Find(request.Id);
-            var mercadoria = _context.Mercadorias.FirstOrDefault(x => x.EntradaId == entrada.Id);           
-            
-            if (mercadoria != null && entrada != null) 
-            {               
+            if (request.Id == null) return "Preencha os campos adequadamente!";
 
-                entrada.Local = request.Local;
-                entrada.DataHora = DateTime.Now;
-                entrada.Quantidade = request.Quantidade;
-                entrada.Mercadorias = new Mercadoria
-                {
-                    Nome = request.Nome,
-                    Fabricante = request.Fabricante,
-                    Descricao = request.Descricao,
-                    NumeroRegistro = request.NumeroRegistro,
-                    Tipo = request.Tipo
-                };                            
+            var mercadoria = _context.Mercadorias.FirstOrDefault(x => x.EntradaId == request.Id);
 
-                _context.Entradas.Update(entrada);
+            try
+            {
+                mercadoria.Nome = request.Nome;
+                mercadoria.Fabricante = request.Fabricante;
+                mercadoria.Descricao = request.Descricao;
+                mercadoria.NumeroRegistro = request.NumeroRegistro;
+                mercadoria.Tipo = request.Tipo;
+
+                _context.Mercadorias.Update(mercadoria);
                 _context.SaveChanges();
-                return "Item alterado com sucesso!";
+
+                return "Mercadoria Atualizada!";
             }
-
-            return "Erro ao tentar atualizar";
+            catch
+            {
+                return "Erro ao tentar atualizar";
+            }
         }
+        public string AddSaidaMercadoria(RequestSaida request)
+        {
 
-       
+            if (request.Id == null) return "Preencha os campos adequadamente!";
+
+            try
+            {
+                var mercadoria = _context.Mercadorias.Find(request.Id);
+                var entrada = _context.Entradas.Find(mercadoria.EntradaId);
+
+                Saida Saida;
+
+                if (mercadoria.GuidSaida != null)
+                {
+                    Saida = new Saida
+                    {
+                        Local = request.Local,
+                        DataHora = request.DataSaida,
+                        Quantidade = request.Quantidade
+                    };
+
+
+                    Saida.GuidSaida = Guid.NewGuid();
+                    entrada.Quantidade = entrada.Quantidade - Saida.Quantidade;
+
+                    _context.Saidas.Add(Saida);
+
+                    mercadoria.GuidSaida = Saida.GuidSaida;
+                    _context.SaveChanges();
+
+                    return "Saida atualizada com sucesso!";
+
+                }
+
+                Saida = new Saida
+                {
+                    Local = request.Local,
+                    DataHora = request.DataSaida,
+                    Quantidade = request.Quantidade
+                };
+
+                Saida.GuidSaida = Guid.NewGuid();
+                entrada.Quantidade = entrada.Quantidade - Saida.Quantidade;
+
+                _context.Saidas.Add(Saida);
+
+                mercadoria.GuidSaida = Saida.GuidSaida;
+                _context.SaveChanges();
+
+                return "Saida adicionada com sucesso!";
+
+            }
+            catch
+            {
+                return "Erro ao tentar adicionar saida";
+            }
+        }
     }
 }
+

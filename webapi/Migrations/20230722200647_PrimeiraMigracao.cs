@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webapi.Migrations
 {
     /// <inheritdoc />
-    public partial class IniciandoMigracao : Migration
+    public partial class PrimeiraMigracao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,9 +17,9 @@ namespace webapi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantidade = table.Column<int>(type: "int", nullable: true),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
                     DataHora = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Local = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Local = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,8 +32,9 @@ namespace webapi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidSaida = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantidade = table.Column<int>(type: "int", nullable: true),
-                    DataHora = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataHora = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Local = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -53,7 +54,7 @@ namespace webapi.Migrations
                     Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EntradaId = table.Column<int>(type: "int", nullable: false),
-                    SaidaId = table.Column<int>(type: "int", nullable: true)
+                    GuidSaida = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,11 +65,6 @@ namespace webapi.Migrations
                         principalTable: "Entradas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Mercadorias_Saidas_SaidaId",
-                        column: x => x.SaidaId,
-                        principalTable: "Saidas",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -76,13 +72,6 @@ namespace webapi.Migrations
                 table: "Mercadorias",
                 column: "EntradaId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Mercadorias_SaidaId",
-                table: "Mercadorias",
-                column: "SaidaId",
-                unique: true,
-                filter: "[SaidaId] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -92,10 +81,10 @@ namespace webapi.Migrations
                 name: "Mercadorias");
 
             migrationBuilder.DropTable(
-                name: "Entradas");
+                name: "Saidas");
 
             migrationBuilder.DropTable(
-                name: "Saidas");
+                name: "Entradas");
         }
     }
 }

@@ -10,6 +10,6 @@
         public string Descricao { get; set; }
         public int EntradaId { get; set; }
         public Entrada Entrada { get; set; }
-        public int? SaidaId { get; set; }      
+        public Guid? GuidSaida { get; set; }      
     }
 }
