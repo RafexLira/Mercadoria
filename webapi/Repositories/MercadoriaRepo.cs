@@ -218,18 +218,16 @@ namespace webapi.Repositories
                 var entrada = _context.Entradas.Find(mercadoria.EntradaId);
 
                 Saida Saida;
-
-                if (mercadoria.GuidSaida != null)
-                {
+               
                     Saida = new Saida
                     {
+                        GuidSaida = Guid.NewGuid(),
                         Local = request.Local,
                         DataHora = request.DataSaida,
                         Quantidade = request.Quantidade
                     };
 
-
-                    Saida.GuidSaida = Guid.NewGuid();
+                  
                     entrada.Quantidade = entrada.Quantidade - Saida.Quantidade;
 
                     _context.Saidas.Add(Saida);
@@ -238,31 +236,15 @@ namespace webapi.Repositories
                     _context.SaveChanges();
 
                     return "Saida atualizada com sucesso!";
-
-                }
-
-                Saida = new Saida
-                {
-                    Local = request.Local,
-                    DataHora = request.DataSaida,
-                    Quantidade = request.Quantidade
-                };
-
-                Saida.GuidSaida = Guid.NewGuid();
-                entrada.Quantidade = entrada.Quantidade - Saida.Quantidade;
-
-                _context.Saidas.Add(Saida);
-
-                mercadoria.GuidSaida = Saida.GuidSaida;
-                _context.SaveChanges();
-
-                return "Saida adicionada com sucesso!";
+                          
 
             }
             catch
             {
                 return "Erro ao tentar adicionar saida";
             }
+            return "Erro ao tentar adicionar saida";
+
         }
     }
 }
