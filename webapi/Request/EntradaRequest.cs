@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json;
-
-namespace webapi.Models
+﻿namespace webapi.Request
 {
-    public class RequestEntrada
+    public class EntradaRequest
     {
-        [JsonProperty("id")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int Quantidade { get; set; }
         public DateTime DataHora { get; set; }
         public string Local { get; set; }
@@ -16,7 +13,5 @@ namespace webapi.Models
         public string Descricao { get; set; }
         public DateTime DataSaida { get; set; }
 
-
-      
     }
 }

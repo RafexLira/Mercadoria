@@ -1,9 +1,6 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Text.Json.Serialization;
-using webapi.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using webapi.Repositories;
+using webapi.Request;
 
 namespace webapi.Controllers
 {
@@ -18,47 +15,47 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        [Route("AddMercadoria")]
-        public string PostMercadoria([FromBody] RequestEntrada Request)
+        [Route("AddEntrada")]
+        public string AddEntrada([FromBody] EntradaRequest Request)
         {
-            return _mercadoriaRepo.AddMercadoria(Request);
+            return _mercadoriaRepo.AddEntrada(Request);
         }      
 
         [HttpGet]
-        [Route("GetMercadoria")]
-        public string GetEntradaMercadoria()
+        [Route("GetEntrada")]
+        public string GetEntrada()
         {
-            var mercadoria = _mercadoriaRepo.GetEntradaMercadoria();
+            var mercadoria = _mercadoriaRepo.GetEntrada();
             return mercadoria;
         }       
 
         [HttpPost]
-        [Route("GetMercadoria/Id")]
-        public string GetByIdEntrada([FromBody] int id)
+        [Route("GetEntrada/id")]
+        public string GetEntradaById([FromBody] int id)
         {              
-            return _mercadoriaRepo.GetByIdEntrada(id);           
+            return _mercadoriaRepo.GetEntradaById(id);           
         }
 
         [HttpGet]
-        [Route("GetSaidas")]
+        [Route("GetSaida")]
         public string GetSaida()
         {
-            var mercadoria = _mercadoriaRepo.GetSaidaMercadoria();
+            var mercadoria = _mercadoriaRepo.GetSaida();
             return mercadoria;
         }
 
         [HttpPost]
-        [Route("GetSaida/Id")]
-        public string GetByIdSaida([FromBody] int id)
+        [Route("GetSaida/id")]
+        public string GetSaidaById([FromBody] int id)
         {
-            return _mercadoriaRepo.GetByIdSaida(id);
-        }
+            return _mercadoriaRepo.GetSaidaById(id);
+        }       
 
         [HttpPut]
-        [Route("AddSaidaMercadoria")]
-        public string AddSaidaMercadoria([FromBody] RequestSaida request)
+        [Route("AddSaida")]
+        public string AddSaida([FromBody] SaidaRequest request)
         {
-            return _mercadoriaRepo.AddSaidaMercadoria(request);
+            return _mercadoriaRepo.AddSaida(request);
         }
 
         [HttpDelete]
@@ -70,7 +67,7 @@ namespace webapi.Controllers
 
         [HttpPut]
         [Route("UpdateMercadoria")]
-        public string UpdateMercadoria([FromBody] RequestMercadoria Request)
+        public string UpdateMercadoria([FromBody] UpdateRequest Request)
         {
             return _mercadoriaRepo.UpdateMercadoria(Request);
         }

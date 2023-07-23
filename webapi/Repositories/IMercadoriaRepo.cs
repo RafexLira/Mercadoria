@@ -1,16 +1,16 @@
-﻿using webapi.Models;
+﻿using webapi.Request;
 
 namespace webapi.Repositories
 {
     public interface IMercadoriaRepo
     {
-        public string GetByIdEntrada(int id);
-        public string GetEntradaMercadoria();
-        public string GetByIdSaida(int id);
-        public string GetSaidaMercadoria();
-        public string AddMercadoria(RequestEntrada request);
-        public string DeleteMercadoria(int id);
-        public string UpdateMercadoria(RequestMercadoria request);        
-        public string AddSaidaMercadoria(RequestSaida request);        
+        string AddEntrada(EntradaRequest request);        
+        string GetEntrada();
+        string GetEntradaById(int id);
+        string GetSaida();
+        string GetSaidaById(int id);       
+        string AddSaida(SaidaRequest request);
+        string DeleteMercadoria(int id);
+        string UpdateMercadoria(UpdateRequest request);        
     }
 }

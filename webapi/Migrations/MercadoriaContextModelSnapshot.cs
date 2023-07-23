@@ -37,10 +37,15 @@ namespace webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MercadoriaId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MercadoriaId");
 
                     b.ToTable("Entradas");
                 });
@@ -57,15 +62,9 @@ namespace webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EntradaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Fabricante")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("GuidSaida")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -81,9 +80,6 @@ namespace webapi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntradaId")
-                        .IsUnique();
-
                     b.ToTable("Mercadorias");
                 });
 
@@ -98,36 +94,43 @@ namespace webapi.Migrations
                     b.Property<DateTime>("DataHora")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("GuidSaida")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Local")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MercadoriaId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MercadoriaId");
+
                     b.ToTable("Saidas");
-                });
-
-            modelBuilder.Entity("webapi.Models.Mercadoria", b =>
-                {
-                    b.HasOne("webapi.Models.Entrada", "Entrada")
-                        .WithOne("Mercadorias")
-                        .HasForeignKey("webapi.Models.Mercadoria", "EntradaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Entrada");
                 });
 
             modelBuilder.Entity("webapi.Models.Entrada", b =>
                 {
-                    b.Navigation("Mercadorias")
+                    b.HasOne("webapi.Models.Mercadoria", "Mercadoria")
+                        .WithMany()
+                        .HasForeignKey("MercadoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Mercadoria");
+                });
+
+            modelBuilder.Entity("webapi.Models.Saida", b =>
+                {
+                    b.HasOne("webapi.Models.Mercadoria", "Mercadoria")
+                        .WithMany()
+                        .HasForeignKey("MercadoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mercadoria");
                 });
 #pragma warning restore 612, 618
         }

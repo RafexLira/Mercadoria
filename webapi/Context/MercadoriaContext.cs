@@ -3,7 +3,7 @@ using webapi.Models;
 
 namespace webapi.Context
 {
-    public class MercadoriaContext: DbContext
+    public class MercadoriaContext : DbContext
     {
 
         private IConfiguration _configuration;
@@ -14,7 +14,7 @@ namespace webapi.Context
         public MercadoriaContext(DbContextOptions<MercadoriaContext> options, IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
-        }
+        }       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

@@ -1,5 +1,3 @@
-using MediatR;
-using System.Reflection;
 using webapi.Context;
 using webapi.Repositories;
 
